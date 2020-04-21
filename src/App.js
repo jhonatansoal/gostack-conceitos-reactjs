@@ -1,54 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
 import api from './services/api';
-
-import "./styles.css";
-
+import './App.css';
+import Header from './components/Header';
+/**
+ * Os principais conceitos de
+ * Componete
+ * Propriedade
+ * Estado & Imutabilidade
+ */
 function App() {
-  const [repositories, setRepositories] = useState([]);
-
-  useEffect(() => {
-    api.get('repositories').then(response => {
-      setRepositories(response.data);
-    });
-  }, []);
-
-  async function handleAddRepository() {
-    const response = await api.post('repositories', {
-      title: 'JhonatanSoal',
-      url: 'https://github.com/jhonatansoal',
-      techs: ['Node.js', 'ReactJS']
-    })
-
-    setRepositories([ ...repositories, response.data ]);
-  }
-
-  async function handleRemoveRepository(id) {
-    await api.delete(`repositories/${id}`);
-
-    const newRepositories = repositories.filter(
-      repository => repository.id !== id
-    )
-
-    setRepositories(newRepositories);
-  }
-
-  return (
-    <div>
-      <ul data-testid="repository-list">
-        {repositories.map(repository => (
-          <li key={repository.id}>
-            {repository.title}
-
-            <button onClick={() => handleRemoveRepository(repository.id)}>
-              Remover
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <button onClick={handleAddRepository}>Adicionar</button>
-    </div>
-  );
+    const [projects, setProjects] = useState([]);
+    useEffect(() => {
+        api.get('projects').then(response => {
+            setProjects(response.data);
+        })
+    }, []);
+    async function handleAddProjeto() {
+        //setProject([...project, `novo projeto${Date.now()}`]);
+        const response = await api.post('projects', {
+            title: `novo projeto${Date.now()}`,
+            owner: "Jhonatan Alves"
+        });
+        const project = response.data;
+        setProjects([...projects], project);
+    }
+    return (
+        <>
+            <Header title='Lista Projetos'>
+                <ul> {projects.map(project => < li key={project.id}>{project.title}</li>)}</ul>
+            </Header > <button type="button" onClick={handleAddProjeto}> Adicionar Projeto </button>
+        </>
+    );
 }
 
 export default App;
